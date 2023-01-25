@@ -1,109 +1,124 @@
-# Nome do projeto
+<h1 align="center">
+Microservice Template
+</h1>
 
-<!---Esses são exemplos. Veja https://shields.io para outras pessoas ou para personalizar este conjunto de escudos. Você pode querer incluir dependências, status do projeto e informações de licença aqui--->
+<p align="center">Este template foi criado no intuito de padronizar a estrutura de pastas, camada de segurança e a nomenclatura de rotas</p>
 
-![GitHub repo size](https://img.shields.io/github/repo-size/iuricode/README-template?style=for-the-badge)
-![GitHub language count](https://img.shields.io/github/languages/count/iuricode/README-template?style=for-the-badge)
-![GitHub forks](https://img.shields.io/github/forks/iuricode/README-template?style=for-the-badge)
-![Bitbucket open issues](https://img.shields.io/bitbucket/issues/iuricode/README-template?style=for-the-badge)
-![Bitbucket open pull requests](https://img.shields.io/bitbucket/pr-raw/iuricode/README-template?style=for-the-badge)
-
-> Linha adicional de texto informativo sobre o que o projeto faz. Sua introdução deve ter cerca de 2 ou 3 linhas. Não exagere, as pessoas não vão ler.
-
-### Ajustes e melhorias
-
-O projeto ainda está em desenvolvimento e as próximas atualizações serão voltadas nas seguintes tarefas:
-
-- [x] Tarefa 1
-- [x] Tarefa 2
-- [x] Tarefa 3
-- [ ] Tarefa 4
-- [ ] Tarefa 5
-
-## 💻 Pré-requisitos
+> ## 💻 Pré-requisitos
 
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
-<!---Estes são apenas requisitos de exemplo. Adicionar, duplicar ou remover conforme necessário--->
-* Você instalou a versão mais recente de `<linguagem / dependência / requeridos>`
-* Você tem uma máquina `<Windows / Linux / Mac>`. Indique qual sistema operacional é compatível / não compatível.
-* Você leu `<guia / link / documentação_relacionada_ao_projeto>`.
 
-## 🚀 Instalando <nome_do_projeto>
+- VTEX CLI instalado
+- Versão ^16.x do NodeJs
 
-Para instalar o <nome_do_projeto>, siga estas etapas:
+> ## ☕ Configurando o template
 
-Linux e macOS:
-```
-<comando_de_instalação>
-```
+Para configurar o template, siga estas etapas:
 
-Windows:
-```
-<comando_de_instalação>
+Clone o repositório para a sua maquina
+
+```bash
+git clone https://github.com/ACCT-global/microservice-template.git
 ```
 
-## ☕ Usando <nome_do_projeto>
+Mude o origin para o repositório do seu projeto executando os comandos em sequencia
 
-Para usar <nome_do_projeto>, siga estas etapas:
-
-```
-<exemplo_de_uso>
+```bash
+git remote rm origin
 ```
 
-Adicione comandos de execução e exemplos que você acha que os usuários acharão úteis. Fornece uma referência de opções para pontos de bônus!
+```bash
+git remote add origin {{link_repo.git}}
 
-## 📫 Contribuindo para <nome_do_projeto>
+# Substitua o "{{link_repo.git}}" pelo link do seu repositório
+```
+
+Modifique o arquivo `./manifest.json` e altere as propriedades abaixo
+
+```json
+{
+  "name": "NOME_DO_APP",
+  "vendor": "ACCOUNT",
+  "title": "TITULO_DO_APP",
+  "description": "DESCRIÇÃO_DO_APP",
+  ...
+}
+```
+
+O que é cada campo:
+
+- `NOME_DO_APP`: Nome do app que deve ser solicitado liberação para executar o builder `Node` pelo formulário da VTEX [aqui](https://docs.google.com/forms/d/e/1FAIpQLSfhuhFxvezMhPEoFlN9yFEkUifGQlGP4HmJQgx6GP32WZchBw/viewform).
+- `ACCOUNT`: Conta onde o app será instalado que também precisa ser colocada no fomulário citado acima.
+- `TITULO_DO_APP`: Titulo do app que será exibido na listagem de apps no admin da loja.
+- `DESCRIÇÃO_DO_APP`: Descrição do app que também será exibido na listagem de apps no admin da loja.
+
+Modifique o arquivo `./package.json` e altere as propriedades abaixo
+
+```json
+{
+  "name": "NOME_DO_APP",
+  ...
+}
+```
+
+- `NOME_DO_APP`: Mesmo nome utilizado no arquivo anterior (Sistemicamente não é utilizado, mas só por conta que no repo da VTEX já vem preenchido).
+
+**🚀 Pronto, seu repositório já esta configurado para receber suas atualizações! 🚀**
+
+> ## 💻 Programando com os padrões do template
+
+Como o projeto tem como uma das finalidades padronizar a segurança, nomeclatura de rotas e estrutura de pastas, sugerimos algumas formas de utilizar os módulos já desenvolvidos no template.
+
+### Segurança
+
+O app contém duas funções/módulos de validação de segurança para as rotas, uma é utilizada como middleware e aceita todos os tipos de validação que serão citados e outra que é utilizado como função validadora dentro do Controller que pode ser especificada o tipo de autenticação que a rota vai aceitar.
+
+**Validação via middleware:**
+No arquivo `./node/middlewares/defaultSecurityCheck.ts` é exportada uma função que deve ser usada como middleware na rota criada no arquivo principal `./index.ts` dessa forma:
+
+```js
+export default new Service({
+  clients,
+  routes: {
+    routeName: method({
+      POST: [defaultSecurityCheck, ...],
+    }),
+  },
+})
+```
+
+Quando a sua rota que tem esse middleware adicionado a ela receber uma requisição, primeiramente antes de ser executada a função, ele irá fazer a verificação se a requisição tem algum dos acessos que foi citado acima, caso tenha, ele chama a próxima função que foi listada no array da requisição, caso não tenha, a requisição é retornada com o *statusCode* `401` que significa **requisição não autorizada** conforme as [normas HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+
+### Nomenclatura de rotas
+
+### Estrutura de pastas
+> ## 📫 Contribuindo com o template
+
 <!---Se o seu README for longo ou se você tiver algum processo ou etapas específicas que deseja que os contribuidores sigam, considere a criação de um arquivo CONTRIBUTING.md separado--->
+
 Para contribuir com <nome_do_projeto>, siga estas etapas:
 
-1. Bifurque este repositório.
+1. Clone o repositório para a sua maquina
 2. Crie um branch: `git checkout -b <nome_branch>`.
 3. Faça suas alterações e confirme-as: `git commit -m '<mensagem_commit>'`
-4. Envie para o branch original: `git push origin <nome_do_projeto> / <local>`
+4. Envie para o branch original: `git push origin <nome_do_projeto>/<local>`
 5. Crie a solicitação de pull.
 
 Como alternativa, consulte a documentação do GitHub em [como criar uma solicitação pull](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
-## 🤝 Colaboradores
-
-Agradecemos às seguintes pessoas que contribuíram para este projeto:
+> ## 🤝 Colaboradores
 
 <table>
   <tr>
     <td align="center">
       <a href="#">
-        <img src="https://avatars3.githubusercontent.com/u/31936044" width="100px;" alt="Foto do Iuri Silva no GitHub"/><br>
+        <img src="https://avatars.githubusercontent.com/u/115479427?v=4" width="60px;" style="border-radius: 100%;" alt="Foto do Iuri Silva no GitHub"/><br>
         <sub>
-          <b>Iuri Silva</b>
-        </sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="#">
-        <img src="https://s2.glbimg.com/FUcw2usZfSTL6yCCGj3L3v3SpJ8=/smart/e.glbimg.com/og/ed/f/original/2019/04/25/zuckerberg_podcast.jpg" width="100px;" alt="Foto do Mark Zuckerberg"/><br>
-        <sub>
-          <b>Mark Zuckerberg</b>
-        </sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="#">
-        <img src="https://miro.medium.com/max/360/0*1SkS3mSorArvY9kS.jpg" width="100px;" alt="Foto do Steve Jobs"/><br>
-        <sub>
-          <b>Steve Jobs</b>
+          <b>Luiz Carlos B Pereita</b>
         </sub>
       </a>
     </td>
   </tr>
 </table>
-
-
-## 😄 Seja um dos contribuidores<br>
-
-Quer fazer parte desse projeto? Clique [AQUI](CONTRIBUTING.md) e leia como contribuir.
-
-## 📝 Licença
-
-Esse projeto está sob licença. Veja o arquivo [LICENÇA](LICENSE.md) para mais detalhes.
 
 [⬆ Voltar ao topo](#nome-do-projeto)<br>
