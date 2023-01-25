@@ -24,11 +24,59 @@
       }
     },
     {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexcommercestable.com.br",
+        "path": "*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{workspace}}--{{account}}.myvtex.com",
+        "path": "*"
+      }
+    },
+    {
       "name": "colossus-fire-event"
     },
     {
       "name": "colossus-write-logs"
     }
   ],
+  "settingsSchema": {
+    "title": "Middleware Auto Service Electrolux Settings",
+    "type": "object",
+    "properties": {
+      "alternativeAccessToken": {
+        "title": "Alterantive access token",
+        "description": "Alternative Token to route authenticate",
+        "type": "string"
+      },
+      "debugSettings": {
+        "title": "Debug settings",
+        "description": "These settings refer only to the debug settings",
+        "type": "object",
+        "properties": {
+          "debugMode": {
+            "title": "Debug mode",
+            "description": "When debug mode is enabled, generates logs data in entity",
+            "type": "boolean",
+            "default": false
+          },
+          "dataEntity": {
+            "title": "Data entity (MD v2)",
+            "description": "Data Entity where to logs will saved",
+            "type": "string"
+          },
+          "schema": {
+            "title": "Schema (MD v2)",
+            "description": "Schema where is found to Data Entity",
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

@@ -1,5 +1,5 @@
 {
-  "name": "service-example",
+  "name": "microservice-template",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

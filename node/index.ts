@@ -2,6 +2,7 @@ import type { ClientsConfig, ServiceContext, RecorderState } from '@vtex/api'
 import { LRUCache, method, Service } from '@vtex/api'
 
 import { Clients } from './clients'
+import { routeTestController } from './src/routes/controllers/routeTestController'
 
 const TIMEOUT_MS = 800
 
@@ -43,9 +44,8 @@ declare global {
 export default new Service({
   clients,
   routes: {
-    // `status` is the route ID from service.json. It maps to an array of middlewares (or a single handler).
-    status: method({
-      GET: [],
+    routeName: method({
+      POST: [routeTestController],
     }),
   },
 })
