@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getCredentials } from '../src/helpers/getCredentials'
 import { getDefaultResponse } from '../src/helpers/getDefaultResponse'
 import { setUnknownError } from '../src/helpers/setUnknownError'
 
@@ -8,12 +7,8 @@ export const defaultSecurityCheck = async (
   next?: (ctx: Context) => any
 ) => {
   try {
-    const { alternativeTokenIsValid } = await getCredentials(ctx)
-
     const isLogged =
-      ctx?.vtex?.adminUserAuthToken ??
-      ctx?.vtex?.storeUserAuthToken ??
-      alternativeTokenIsValid
+      ctx?.vtex?.adminUserAuthToken ?? ctx?.vtex?.storeUserAuthToken
 
     if (isLogged && next) {
       return next(ctx)

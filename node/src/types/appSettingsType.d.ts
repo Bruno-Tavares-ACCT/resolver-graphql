@@ -6,7 +6,3 @@ export interface AppSettings {
     schema?: string
   }
 }
-
-export interface GetCredentialsParams {
-  alternativeTokenIsValid: boolean
-}

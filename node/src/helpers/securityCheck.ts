@@ -3,7 +3,7 @@ import { setUnknownError } from './setUnknownError'
 
 type SecurityCheckParams = {
   ctx: Context
-  accessType: 'ADMIN' | 'STORE' | 'ALTERNATIVE_TOKEN'
+  accessType: Array<'ADMIN' | 'STORE' | 'ALTERNATIVE_TOKEN'>
 }
 
 export const securityCheck = async ({
@@ -11,21 +11,26 @@ export const securityCheck = async ({
   accessType,
 }: SecurityCheckParams): Promise<boolean> => {
   try {
-    const { alternativeTokenIsValid } = await getCredentials(ctx)
+    const appSettings = await getCredentials(ctx)
+    const alternativeTokenIsValid =
+      ctx.request.headers.authorization ===
+      `Bearer ${appSettings?.alternativeAccessToken}`
 
-    switch (accessType) {
-      case 'ADMIN':
-        return !!ctx?.vtex?.adminUserAuthToken
+    return !!accessType?.find((pAccessType) => {
+      switch (pAccessType) {
+        case 'ADMIN':
+          return !!ctx?.vtex?.adminUserAuthToken
 
-      case 'STORE':
-        return !!ctx?.vtex?.storeUserAuthToken
+        case 'STORE':
+          return !!ctx?.vtex?.storeUserAuthToken
 
-      case 'ALTERNATIVE_TOKEN':
-        return alternativeTokenIsValid
+        case 'ALTERNATIVE_TOKEN':
+          return alternativeTokenIsValid
 
-      default:
-        return false
-    }
+        default:
+          return false
+      }
+    })
   } catch (error) {
     setUnknownError(ctx, error)
   }
