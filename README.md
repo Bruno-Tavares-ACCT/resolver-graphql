@@ -2,18 +2,17 @@
 Microservice Template
 </h1>
 
-<p align="center">Este template foi criado no intuito de padronizar a estrutura de pastas, camada de segurança e a declaração de rotas</p>
+<p align="center">Este template foi criado no intuito de sugerir a padronização na estruturação das pastas, camada de segurança e na declaração de rotas a todos os novos micros serviços criados</p>
 
 ## 💻 Pré-requisitos
 
-Antes de começar, verifique se você atendeu aos seguintes requisitos:
+Antes de começar, verifique se sua maquina atende aos seguintes requisitos:
 
-- VTEX CLI instalado
-- Versão ^16.x do NodeJs
+- **VTEX CLI** instalado;
+- Versão **16.x** do **NodeJs**;
+- **GIT** instalado.
 
-## ☕ Configurando o template
-
-Para configurar o template, siga estas etapas:
+## ☕ Clonando e configurando o template
 
 Clone o repositório para a sua maquina
 
@@ -45,8 +44,6 @@ Modifique o arquivo `./manifest.json` e altere as propriedades abaixo
 }
 ```
 
-O que é cada campo:
-
 - **NOME_DO_APP:** Nome do app que deve ser solicitado liberação para executar o builder `Node` pelo formulário da VTEX [aqui](https://docs.google.com/forms/d/e/1FAIpQLSfhuhFxvezMhPEoFlN9yFEkUifGQlGP4HmJQgx6GP32WZchBw/viewform).
 - **ACCOUNT:** Conta onde o app será instalado que também precisa ser colocada no fomulário citado acima.
 - **TITULO_DO_APP:** Titulo do app que será exibido na listagem de apps no admin da loja.
@@ -67,13 +64,13 @@ Modifique o arquivo `./package.json` e altere as propriedades abaixo
 
 ## 💻 Programando com os padrões do template
 
-Como o projeto tem como uma das finalidades padronizar a segurança, nomeclatura de rotas e estrutura de pastas, sugerimos algumas formas de utilizar os módulos já desenvolvidos no template.
+Como o projeto tem como objetivo sugerir a padronização no desenvolvimento, segue algumas formas de utilizar os módulos já desenvolvidos no template.
 
 ### Segurança
 
-O app contém duas funções/módulos de validação de segurança para as rotas. Uma é utilizada como middleware e aceita todos os tipos de validação que serão citados abaixo e outra é utilizada como função validadora dentro do Controller que pode ser especificada o tipo de autenticação que a rota vai aceitar.
+O app contém duas funções/métodos de validação de segurança para as rotas. Uma é utilizada como middleware e aceita dois tipos de validação que serão citados abaixo e outra é utilizada como função validadora dentro dos controllers que pode ser especificada o tipo de autenticação que a rota vai aceitar.
 
-**Tipos de validação:**
+**Tipos de autenticação:**
 - **ADMIN:** Quando a requisição tem um token de admin, ou seja, que foi feita da pagina de admin da loja, conforme [documentação da VTEX](https://developers.vtex.com/docs/guides/getting-started-authentication#user-token).
 - **STORE:** Quando a requisição tem um token de usuário logado, ou seja, quando o usuário fez login na loja, conforme [documentação da VTEX](https://developers.vtex.com/docs/guides/getting-started-authentication#user-token).
 - **ALTERNATIVE_TOKEN:** Quando a requisição envia um header `Authorization` do tipo `Bearer Token` com o token que foi configurado na pagina de configuração do app no admin.
@@ -122,7 +119,7 @@ O padrão sugerido é:
 ...
 "routes": {
     "routeName": {
-      "path": "/{{VERSÃO_ROTA}}/{{NOME_APP}}/{{NOME_ROTA}}",
+      "path": "/VERSÃO_ROTA/NOME_APP/NOME_ROTA",
       ...
     }
   }
@@ -131,13 +128,18 @@ O padrão sugerido é:
 - **NOME_APP:** Nome do app em questão que foi colocado na propriedade `name` do arquivo `./manifest.json`. Esse é um dos mais importantes, o padrão sugerido é que o nome não passe de duas palavras e seja escrito em caixa baixa e tudo junto. Um exemplo, se o nome do app for `app-teste-lorem` ficaria `appteste`, `applorem`, etc.
 - **NOME_ROTA:** Nome da rota com um nome sugestivo a sua função, um exemplo, se é uma rota que lida com listagem de motivos de cancelamento, ficaria `getmotives` ou `listmotives`
 
-
 ### Estrutura de pastas
+
+A estrutura de pastas do template foi feito da seguinte forma dentro da pasta `./node/` que é o builder principal do projeto:
+
+- `./clients/:` Tem como principio conter a estrutura de clients que a própria VTEX já disbonibiliza.
+- `./middlewares/:` Tem como principio conter a estrutura de middlewares que a própria VTEX já disbonibiliza. Obs: Aqui é onde esta o nosso middleware padrão de segurança que foi citado [aqui](#segurança).
+- `./src/helpers/:` Tem como principio conter todas as funções facilitadoras que podem ser utilizadas em qualquer parte do código.
+- `./src/routes/controller:` Tem como principio conter todos os métodos de controle responsáveis por lidar com as requisições que chagam nas rotas.
+- `./src/routes/services:` Tem como principio conter todas as implementações de serviço com responsabilidade unica que são utilizadas em conjunto dentro dos métodos de controle.
+- `./src/types/:` Tem como principio conter todos os types que serão utilizados em mais de um lugar.
 ## 📫 Contribuindo com o template
-
-<!---Se o seu README for longo ou se você tiver algum processo ou etapas específicas que deseja que os contribuidores sigam, considere a criação de um arquivo CONTRIBUTING.md separado--->
-
-Para contribuir com <nome_do_projeto>, siga estas etapas:
+Para contribuir com o projeto, siga estas etapas:
 
 1. Clone o repositório para a sua maquina
 2. Crie um branch: `git checkout -b <nome_branch>`.

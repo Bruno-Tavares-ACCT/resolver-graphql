@@ -1,9 +1,33 @@
+import { getDefaultResponse } from '../../helpers/getDefaultResponse'
+import { securityCheck } from '../../helpers/securityCheck'
 import { setUnknownError } from '../../helpers/setUnknownError'
-import { alternativeTokenValidation } from '../services/alternativeTokenValidation'
+import { testService } from '../services/testService'
 
 export const routeTestController = async (ctx: Context) => {
   try {
-    await alternativeTokenValidation(ctx)
+    // Example of how utilizate is validation of alternative token
+    const isUserValid = await securityCheck({
+      ctx,
+      accessType: ['ALTERNATIVE_TOKEN', 'STORE'],
+    })
+
+    if (!isUserValid) {
+      ctx.status = 401
+      ctx.body = getDefaultResponse({
+        success: false,
+        message: 'User not validated by alternative token',
+      })
+
+      return
+    }
+
+    const { message, data } = testService()
+
+    ctx.body = getDefaultResponse({
+      success: true,
+      message,
+      data,
+    })
   } catch (err) {
     setUnknownError(ctx, err)
   }
