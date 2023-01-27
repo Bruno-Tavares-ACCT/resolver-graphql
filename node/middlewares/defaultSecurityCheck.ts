@@ -7,8 +7,11 @@ export const defaultSecurityCheck = async (
   next?: (ctx: Context) => any
 ) => {
   try {
+    const permissionsUser = ctx.state.authenticatedUser?.permissions
+
+    console.info('TCL: permissionsUser', permissionsUser)
     const isLogged =
-      ctx?.vtex?.adminUserAuthToken ?? ctx?.vtex?.storeUserAuthToken
+      permissionsUser?.includes('ADMIN') ?? permissionsUser?.includes('STORE')
 
     if (isLogged && next) {
       return next(ctx)

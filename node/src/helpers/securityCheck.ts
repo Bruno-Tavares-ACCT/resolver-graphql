@@ -1,9 +1,9 @@
-import { getCredentials } from './getCredentials'
+import type { AccessType } from '../types/authenticatedUser'
 import { setUnknownError } from './setUnknownError'
 
 type SecurityCheckParams = {
   ctx: Context
-  accessType: Array<'ADMIN' | 'STORE' | 'ALTERNATIVE_TOKEN'>
+  accessType: AccessType[]
 }
 
 export const securityCheck = async ({
@@ -11,21 +11,18 @@ export const securityCheck = async ({
   accessType,
 }: SecurityCheckParams): Promise<boolean> => {
   try {
-    const appSettings = await getCredentials(ctx)
-    const alternativeTokenIsValid =
-      ctx.request.headers.authorization ===
-      `Bearer ${appSettings?.alternativeAccessToken}`
+    const permissionsUser = ctx.state.authenticatedUser?.permissions
 
     return !!accessType?.find((pAccessType) => {
       switch (pAccessType) {
         case 'ADMIN':
-          return !!ctx?.vtex?.adminUserAuthToken
+          return permissionsUser?.includes('ADMIN')
 
         case 'STORE':
-          return !!ctx?.vtex?.storeUserAuthToken
+          return permissionsUser?.includes('STORE')
 
         case 'ALTERNATIVE_TOKEN':
-          return alternativeTokenIsValid
+          return permissionsUser?.includes('ALTERNATIVE_TOKEN')
 
         default:
           return false

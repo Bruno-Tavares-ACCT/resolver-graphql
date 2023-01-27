@@ -2,7 +2,12 @@ import type { ClientsConfig, ServiceContext, RecorderState } from '@vtex/api'
 import { LRUCache, method, Service } from '@vtex/api'
 
 import { Clients } from './clients'
+import { getAuthInfo } from './middlewares/getAuthInfo'
 import { routeTestController } from './src/routes/controllers/routeTestController'
+import type {
+  AuthenticatedUser,
+  UserPermissions,
+} from './src/types/authenticatedUser'
 
 const TIMEOUT_MS = 800
 
@@ -37,6 +42,7 @@ declare global {
   // The shape of our State object found in `ctx.state`. This is used as state bag to communicate between middlewares.
   interface State extends RecorderState {
     code: number
+    authenticatedUser: (AuthenticatedUser & UserPermissions) | undefined
   }
 }
 
@@ -45,7 +51,7 @@ export default new Service({
   clients,
   routes: {
     routeName: method({
-      POST: [routeTestController],
+      POST: [getAuthInfo, routeTestController],
     }),
   },
 })

@@ -21,7 +21,7 @@ export const routeTestController = async (ctx: Context) => {
       return
     }
 
-    const { message, data } = testService()
+    const { message, data } = await testService()
 
     ctx.body = getDefaultResponse({
       success: true,

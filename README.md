@@ -68,14 +68,34 @@ Como o projeto tem como objetivo sugerir a padronização no desenvolvimento, se
 
 ### Segurança
 
-O app contém duas funções/métodos de validação de segurança para as rotas. Uma é utilizada como middleware e aceita dois tipos de validação que serão citados abaixo e outra é utilizada como função validadora dentro dos controllers que pode ser especificada o tipo de autenticação que a rota vai aceitar.
+O app contém um método de obtenção de dados de autenticação e dois métodos de validação de segurança para as rotas. Nos médodos de validação um é utilizado como middleware e aceita dois tipos de validação que serão citados abaixo e o outro é utilizado como função validadora dentro dos controllers que pode ser especificada o tipo de autenticação que a rota vai aceitar.
 
 **Tipos de autenticação:**
 - **ADMIN:** Quando a requisição tem um token de admin, ou seja, que foi feita da pagina de admin da loja, conforme [documentação da VTEX](https://developers.vtex.com/docs/guides/getting-started-authentication#user-token).
 - **STORE:** Quando a requisição tem um token de usuário logado, ou seja, quando o usuário fez login na loja, conforme [documentação da VTEX](https://developers.vtex.com/docs/guides/getting-started-authentication#user-token).
 - **ALTERNATIVE_TOKEN:** Quando a requisição envia um header `Authorization` do tipo `Bearer Token` com o token que foi configurado na pagina de configuração do app no admin.
 
+**Obtendo dados do usuário logado**
+
+Para suprir a necessiadade das duas formas de validar se o usuário esta logando tanto pelo **middleware** quanto pela **função validadora** foi criada um outro middleware (`getAuthInfo`) que obtem informações básicas do usuário logado e ainda quais tipos de autenticação ele tem disponivel. 
+Como se trata de um middleware, é necessário adiciona-lo antes de todos os outros middlewares para as rotas que vão usar algum dos métodos de validação, para que o estado da aplicação seja alimentado por essas informações.
+
+Um exemplo usando a **validação via middleware**:
+
+```js
+export default new Service({
+  clients,
+  routes: {
+    routeName: method({
+      POST: [getAuthInfo, defaultSecurityCheck, /*proxima função*/],
+    }),
+  },
+})
+```
+
+
 **Validação via middleware:**
+
 No arquivo `./node/middlewares/defaultSecurityCheck.ts` é exportada uma função que deve ser usada como middleware na rota criada no arquivo principal `./index.ts` dessa forma:
 
 ```js
@@ -89,7 +109,7 @@ export default new Service({
 })
 ```
 
-Quando a sua rota que tem esse middleware adicionado a ela receber uma requisição, ele irá fazer a verificação se a requisição tem o tipo de acesso **"ADMIN"** ou **"STORE"**, caso tenha, ele chama a próxima função que foi listada no array da requisição, caso não tenha, a requisição é retornada com o *status code* `401` que significa **requisição não autorizada** conforme as [normas HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
+Quando a sua rota que tem esse middleware adicionado receber uma requisição, ele irá fazer a verificação se a requisição tem o tipo de acesso **"ADMIN"** ou **"STORE"**, caso tenha, ele chama a próxima função que foi listada no array da requisição, caso não tenha, a requisição é retornada com o *status code* `401` que significa **requisição não autorizada** conforme as [normas HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
 
 **Validação via função:**
 
@@ -128,15 +148,29 @@ O padrão sugerido é:
 - **NOME_APP:** Nome do app em questão que foi colocado na propriedade `name` do arquivo `./manifest.json`. Esse é um dos mais importantes, o padrão sugerido é que o nome não passe de duas palavras e seja escrito em caixa baixa e tudo junto. Um exemplo, se o nome do app for `app-teste-lorem` ficaria `appteste`, `applorem`, etc.
 - **NOME_ROTA:** Nome da rota com um nome sugestivo a sua função, um exemplo, se é uma rota que lida com listagem de motivos de cancelamento, ficaria `getmotives` ou `listmotives`
 
+no caso dos exemplos acima ficaria dessa forma: 
+```json
+...
+"routes": {
+    "routeName": {
+      "path": "/v1/applorem/getmotives",
+      ...
+    }
+  }
+```
+
+**ATENÇÃO:**
+
+ainda sobre rotas, é importante citar uma regra da VTEX que quando seu app for ao AR, ou seja, subir para produção, é necessário que ao chamar a sua rota em um dominio publico (ex: `teste.com.br`) deve-se colocar `/api/io/` antes da rota para que ele funcione da maneira correta, caso contrario o app pode não funcionar ou não se autenticar.
 ### Estrutura de pastas
 
 A estrutura de pastas do template foi feito da seguinte forma dentro da pasta `./node/` que é o builder principal do projeto:
 
-- `./clients/:` Tem como principio conter a estrutura de clients que a própria VTEX já disbonibiliza.
+- `./clients/:` Tem como principio conter a estrutura de clients que a própria VTEX já disbonibiliza e também receber as novas implementações de clients custom, para saber mais veja [essa documentação](https://learn.vtex.com/docs/course-service-course-step04clients-analytics-lang-pt).
 - `./middlewares/:` Tem como principio conter a estrutura de middlewares que a própria VTEX já disbonibiliza. Obs: Aqui é onde esta o nosso middleware padrão de segurança que foi citado [aqui](#segurança).
 - `./src/helpers/:` Tem como principio conter todas as funções facilitadoras que podem ser utilizadas em qualquer parte do código.
-- `./src/routes/controller:` Tem como principio conter todos os métodos de controle responsáveis por lidar com as requisições que chagam nas rotas.
-- `./src/routes/services:` Tem como principio conter todas as implementações de serviço com responsabilidade unica que são utilizadas em conjunto dentro dos métodos de controle.
+- `./src/routes/controller/:` Tem como principio conter todos os métodos de controle responsáveis por lidar com as requisições que chagam nas rotas.
+- `./src/routes/services/:` Tem como principio conter todas as implementações de serviço com responsabilidade unica, implementações mais complexas do que as que já contém na pasta `./clients/` e que são utilizadas em conjunto dentro dos métodos de controle.
 - `./src/types/:` Tem como principio conter todos os types que serão utilizados em mais de um lugar.
 ## 📫 Contribuindo com o template
 Para contribuir com o projeto, siga estas etapas:
@@ -155,7 +189,7 @@ Como alternativa, consulte a documentação do GitHub em [como criar uma solicit
   <tr>
     <td align="center">
       <a href="https://github.com/luizbpacct" target="_blank" title="Luiz Carlos B Pereira">
-        <img src="https://avatars.githubusercontent.com/u/115479427?v=4" width="50px;" style="border-radius: 100%;" alt="Foto do Iuri Silva no GitHub"/><br>
+        <img src="https://avatars.githubusercontent.com/u/115479427" width="50px;" style="border-radius: 100%;" alt="Luiz Carlos B Pereira"/><br>
       </a>
     </td>
   </tr>
