@@ -29,7 +29,7 @@ export const securityCheck = async ({
       }
     })
   } catch (error) {
-    setUnknownError(ctx, error)
+    await setUnknownError(ctx, error)
   }
 
   return false

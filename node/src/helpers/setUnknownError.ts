@@ -1,3 +1,4 @@
+import { getByTypeError } from './getByTypeError'
 import { getDefaultResponse } from './getDefaultResponse'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -7,7 +8,7 @@ export const setUnknownError = async (ctx: Context, error: any) => {
   await logClient.create({
     ctx,
     logInput: {
-      content: JSON.stringify(error),
+      content: getByTypeError(error),
       step: 'Unknown Error',
     },
   })
