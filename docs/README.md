@@ -1,4 +1,4 @@
-<h1 align="center">
+<h1 align="center" id="microservice-template">
 Microservice Template
 </h1>
 
@@ -172,6 +172,44 @@ A estrutura de pastas do template foi feito da seguinte forma dentro da pasta `.
 - `./src/routes/controller/:` Tem como principio conter todos os métodos de controle responsáveis por lidar com as requisições que chagam nas rotas.
 - `./src/routes/services/:` Tem como principio conter todas as implementações de serviço com responsabilidade unica, implementações mais complexas do que as que já contém na pasta `./clients/` e que são utilizadas em conjunto dentro dos métodos de controle.
 - `./src/types/:` Tem como principio conter todos os types que serão utilizados em mais de um lugar.
+
+### Mecanismo de Logs
+Foi criado também um forma de criar logs da aplicação por meio da utilização do Masterdata V1 ou V2, sendo possivel ser selecionado a versão no desenvolvimento e as entidades configuradas no Admin.
+
+Para utilizar primeiramente deve ser criar uma entidade no masterdata, aqui irei exeplificar no masterdata V1 (no V2 segue o mesmo fluxo, muda somente a forma que a entidade é criada).
+
+Foi criada a entidade `Test Logs` com o acronym `TL` que tem os seguintes campos?
+```ts
+appName: Varchar(100)
+dateSystem: Varchar(100)
+message: Text
+typeMessage: Varchar(100)
+```
+
+Agora temos que configura-lo no admin, para acessalo, vá até o admin da loja e abra o menu `Configuraçoes da Conta -> Aplicativos -> Meus Aplicativos` e Busque pelo nome do seu app que você configurou no campo `title` do arquivo **manisfest.json**, lá ira ter três campos a serem configurados e um ativado.
+
+- `Debug mode`: Serve para ativar ou desativar a inserção de logs tanto no masterdata V1 quanto no V2;
+- `Data acronym (MD V1)`: É o acronym da entidade de dados que foi criada no masterdata V1, no nosso é exemplo é `TL`;
+- `Data entity (MD V2)`: É o nome da entidade criada no masterdata V2;
+- `Schema (MD v2)`: É o nome do schema onde a entidade se encontra no masterdata V2;
+
+Agora no código para utilizar essa ferramenta de log, basta chamar o client `logClient` e utilizar a função `create` igual exemplificado abaixo:
+
+```js
+const { logClient } = ctx.clients
+
+await logClient.create({
+    logInput: { // Aqui são os campos que foram criados na entidade do nosso exemplo acima
+      appName: 'Middleware',
+      message: `Iniciou o processo`,
+      dateSystem: new Date().toISOString(),
+      typeMessage: 'Process',
+    },
+    ctx,
+    masterDataVersion: 'v1', // Aqui pode ser selecionada a versão do masterdata sendo V1 ou V2; se a variavel não for colocada, sera redirecionada por padrão pro V2;
+  })
+```
+
 ## 📫 Contribuindo com o template
 Para contribuir com o projeto, siga estas etapas:
 
@@ -192,7 +230,12 @@ Como alternativa, consulte a documentação do GitHub em [como criar uma solicit
         <img src="https://avatars.githubusercontent.com/u/115479427" width="50px;" style="border-radius: 100%;" alt="Luiz Carlos B Pereira"/><br>
       </a>
     </td>
+    <td align="center">
+      <a href="https://github.com/laricouto" target="_blank" title="Larissa Couto">
+        <img src="https://avatars.githubusercontent.com/u/112199185" width="50px;" style="border-radius: 100%;" alt="Larissa Couto"/><br>
+      </a>
+    </td>
   </tr>
 </table>
 
-[⬆ Voltar ao topo](#nome-do-projeto)<br>
+[⬆ Voltar ao topo](#microservice-template)<br>

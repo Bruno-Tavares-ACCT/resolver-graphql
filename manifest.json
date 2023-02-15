@@ -72,7 +72,7 @@
             "default": false
           },
           "dataEntityV1": {
-            "title": "Data entity (MD V1)",
+            "title": "Data acronym (MD V1)",
             "description": "Data Entity where to logs will saved",
             "type": "string"
           },
