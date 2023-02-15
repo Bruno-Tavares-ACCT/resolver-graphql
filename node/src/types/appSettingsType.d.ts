@@ -1,8 +1,12 @@
+export interface DebugSettingsType {
+  debugMode?: boolean
+  dataEntityV1?: string
+  dataEntityV2?: string
+  schema?: string
+}
+
 export interface AppSettings {
   alternativeAccessToken?: string
-  debugSettings?: {
-    debugMode?: boolean
-    dataEntity?: string
-    schema?: string
-  }
+  templateNameEmailWithdraw: string
+  debugSettings?: DebugSettingsType
 }

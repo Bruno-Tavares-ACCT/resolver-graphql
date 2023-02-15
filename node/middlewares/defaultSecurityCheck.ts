@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getDefaultResponse } from '../src/helpers/getDefaultResponse'
 import { setUnknownError } from '../src/helpers/setUnknownError'
@@ -9,9 +10,8 @@ export const defaultSecurityCheck = async (
   try {
     const permissionsUser = ctx.state.authenticatedUser?.permissions
 
-    console.info('TCL: permissionsUser', permissionsUser)
     const isLogged =
-      permissionsUser?.includes('ADMIN') ?? permissionsUser?.includes('STORE')
+      permissionsUser?.includes('ADMIN') || permissionsUser?.includes('STORE')
 
     if (isLogged && next) {
       return next(ctx)
@@ -29,6 +29,6 @@ export const defaultSecurityCheck = async (
       message: 'User no access',
     })
   } catch (error) {
-    setUnknownError(ctx, error)
+    await setUnknownError(ctx, error)
   }
 }

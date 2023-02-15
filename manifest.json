@@ -71,8 +71,13 @@
             "type": "boolean",
             "default": false
           },
-          "dataEntity": {
-            "title": "Data entity (MD v2)",
+          "dataEntityV1": {
+            "title": "Data entity (MD V1)",
+            "description": "Data Entity where to logs will saved",
+            "type": "string"
+          },
+          "dataEntityV2": {
+            "title": "Data entity (MD V2)",
             "description": "Data Entity where to logs will saved",
             "type": "string"
           },

@@ -1,9 +1,12 @@
-export interface LogInput {
-  step: string
-  content: string
-}
+export type MasterDataVersionType = 'v1' | 'v2'
 
 export interface CreateParams {
-  logInput: LogInput
+  logInput: Record<string, any>
+  masterDataVersion?: MasterDataVersionType
   ctx: Context
+}
+
+export type OptionsCreateDocumentType = {
+  dataEntity: string
+  schema?: string
 }
