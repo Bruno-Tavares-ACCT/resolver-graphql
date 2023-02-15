@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import { getCredentials } from '../src/helpers/getCredentials'
 import type {
   AccessType,
@@ -12,6 +13,7 @@ export async function getAuthInfo(ctx: Context, next: () => Promise<unknown>) {
 
   let authenticatedStoreUser: AuthenticatedUser | undefined
   let authenticatedAdminUser: AuthenticatedUser | undefined
+  let alternativeTokenIsValid = false
   let permissions: AccessType[] = []
 
   if (storeUserAuthToken) {
@@ -26,9 +28,14 @@ export async function getAuthInfo(ctx: Context, next: () => Promise<unknown>) {
     )
   }
 
-  if (authenticatedStoreUser || authenticatedAdminUser) {
+  if (
+    authenticatedStoreUser ||
+    authenticatedAdminUser ||
+    ctx?.request?.headers?.authorization
+  ) {
     const appSettings = await getCredentials(ctx)
-    const alternativeTokenIsValid =
+
+    alternativeTokenIsValid =
       ctx.request.headers.authorization ===
       `Bearer ${appSettings?.alternativeAccessToken}`
 
@@ -52,14 +59,14 @@ export async function getAuthInfo(ctx: Context, next: () => Promise<unknown>) {
   }
 
   ctx.state.authenticatedUser =
-    authenticatedStoreUser || authenticatedAdminUser
+    authenticatedStoreUser || authenticatedAdminUser || alternativeTokenIsValid
       ? {
           user: authenticatedStoreUser
             ? authenticatedStoreUser.user
-            : authenticatedAdminUser?.user ?? '',
+            : authenticatedAdminUser?.user || '',
           userId: authenticatedStoreUser
             ? authenticatedStoreUser.userId
-            : authenticatedAdminUser?.userId ?? '',
+            : authenticatedAdminUser?.userId || '',
           permissions,
         }
       : undefined
