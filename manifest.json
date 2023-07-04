@@ -26,6 +26,13 @@
     {
       "name": "outbound-access",
       "attrs": {
+        "host": "viacep.com.br",
+        "path": "/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
         "host": "httpstat.us",
         "path": "*"
       }

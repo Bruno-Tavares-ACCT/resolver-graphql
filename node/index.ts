@@ -3,7 +3,7 @@ import { LRUCache, method, Service } from '@vtex/api'
 
 import { Clients } from './clients'
 import { getAuthInfo } from './middlewares/getAuthInfo'
-import { routeTestController } from './src/routes/controllers/routeTestController'
+import { getCepInfo } from './src/routes/controllers/getCepInfo'
 import type {
   AuthenticatedUser,
   UserPermissions,
@@ -50,8 +50,8 @@ declare global {
 export default new Service({
   clients,
   routes: {
-    routeName: method({
-      POST: [getAuthInfo, routeTestController],
+    getCep: method({
+      POST: [getAuthInfo, getCepInfo],
     }),
   },
 })
